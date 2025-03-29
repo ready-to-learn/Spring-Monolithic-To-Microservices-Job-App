@@ -1,7 +1,15 @@
 package com.monolithic.jobapp.job;
 
+import com.monolithic.jobapp.company.Company;
+import jakarta.persistence.*;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
+
+@Entity
+//@Table(name = "Job_Table")
 public class Job {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String description;
@@ -9,13 +17,31 @@ public class Job {
     private String maxSalary;
     private String location;
 
-    public Job(Long id, String title, String description, String minSalary, String maxSalary, String location) {
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public Job(Long id, String title, String description, String minSalary, String maxSalary, String location, Company company) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.minSalary = minSalary;
         this.maxSalary = maxSalary;
         this.location = location;
+        this.company = company;
+
+    }
+
+    public Job() {
+
     }
 
     public Long getId() {
@@ -65,4 +91,8 @@ public class Job {
     public void setLocation(String location) {
         this.location = location;
     }
+
+
+
+
 }
