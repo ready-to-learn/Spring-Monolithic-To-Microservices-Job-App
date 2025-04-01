@@ -1,10 +1,9 @@
 package com.monolithic.jobapp.company;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -17,42 +16,47 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Optional<List<Company>> findAll() {
-        return Optional.of(companyRepository.findAll());
+    public List<Company>findAll() {
+        return companyRepository.findAll();
     }
 
     @Override
     public String createCompany(Company company) {
-        companyRepository.save(company);
-        return "Company created";
+        try {
+            companyRepository.save(company);
+            return "Company created";
+        }catch(Exception e){
+            e.printStackTrace();
+            return "Error creating company";
+        }
     }
 
     @Override
     public boolean updateCompany(Long id, Company updatedCompany) {
-        Optional<Company> company = companyRepository.findById(id);
-        if(company.isPresent()){
-            Company companyToupdate = company.get();
-            companyToupdate.setName(updatedCompany.getName());
-            companyToupdate.setDescription(updatedCompany.getDescription());
-            companyToupdate.setJobs(updatedCompany.getJobs());
-            companyRepository.save(companyToupdate);
-            return true;
-        }
-        return false;
+        return companyRepository.findById(id)
+                .map(
+                        company -> {
+                        company.setName(updatedCompany.getName());
+                        company.setDescription(updatedCompany.getDescription());
+                        company.setJobs(updatedCompany.getJobs());
+                        companyRepository.save(company);
+                        return true;
+                        })
+                .orElse(false);
     }
 
     @Override
     public boolean deleteCompany(Long id) {
-        if(companyRepository.existsById(id)) {
+        try{
             companyRepository.deleteById(id);
             return true;
+        }catch (EmptyResultDataAccessException e){
+            return false;
         }
-        return false;
     }
 
     @Override
-    public Optional<Company> findById(Long id) {
-        Optional<Company> company = companyRepository.findById(id);
-        return company.isPresent() ? company : null;
+    public Company findById(Long id) {
+        return companyRepository.findById(id).orElse(null);
     }
 }

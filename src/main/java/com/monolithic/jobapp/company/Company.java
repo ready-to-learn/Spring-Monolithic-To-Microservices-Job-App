@@ -2,6 +2,7 @@ package com.monolithic.jobapp.company;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.monolithic.jobapp.job.Job;
+import com.monolithic.jobapp.review.Review;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -30,6 +31,18 @@ public class Company {
     @JsonIgnore
     @OneToMany(mappedBy = "company")
     private List<Job> jobs;
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "company")
+    private List<Review> reviews;
 
     public Company(Long id, String name, String description) {
         this.id = id;

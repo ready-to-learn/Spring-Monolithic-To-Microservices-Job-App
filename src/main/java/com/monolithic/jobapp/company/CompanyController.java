@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/companies")
@@ -21,9 +20,9 @@ public class CompanyController {
 
     @GetMapping()
     public ResponseEntity<List<Company>> findAll(){
-        Optional<List<Company>> companies = companyService.findAll();
-        if (companies.isPresent())
-            return new ResponseEntity<>(companies.get(), HttpStatus.OK);
+        List<Company> companies = companyService.findAll();
+        if (!companies.isEmpty())
+            return new ResponseEntity<>(companies, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
@@ -31,9 +30,9 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Company> findById(@PathVariable Long id) {
-        Optional<Company> companies = companyService.findById(id);
-        if (companies.isPresent())
-            return new ResponseEntity<>(companies.get(), HttpStatus.OK);
+        Company company = companyService.findById(id);
+        if (company != null)
+            return new ResponseEntity<>(company, HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
