@@ -31,17 +31,6 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public boolean addReview(Long companyId, Review review) {
-
-//       return this.companyService.findById(companyId)
-//                .map(
-//                        company -> {
-//                            Company companyObj = (Company)company;
-//                            review.setCompany(company);
-//                            reviewRepository.save(review);
-//                            return true;
-//                        }
-//                ).orElse(false);
-
         return this.companyRepository.findById(companyId)
                 .map(company -> {
                     review.setCompany(company);
